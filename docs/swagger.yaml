@@ -1,0 +1,451 @@
+definitions:
+  models.CreateCategory:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+      used_time:
+        type: integer
+      user:
+        type: string
+    type: object
+  models.CreatePartner:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+      used_time:
+        type: integer
+      user_id:
+        type: string
+    type: object
+  models.Type:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      user:
+        type: string
+    type: object
+  models.UpdateCategory:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+      used_time:
+        type: integer
+      user:
+        type: string
+    type: object
+  models.UpdatePartner:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+      used_time:
+        type: integer
+      user:
+        type: string
+    type: object
+  models.UserLogin:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  models.UserRegister:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /categories:
+    get:
+      consumes:
+      - application/json
+      description: Get all categories associated with the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Get All Categories By User
+      tags:
+      - Category
+    post:
+      consumes:
+      - application/json
+      description: Create Category
+      parameters:
+      - description: Category data
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCategory'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Create Category
+      tags:
+      - Category
+    put:
+      consumes:
+      - application/json
+      description: Update Category By ID
+      parameters:
+      - description: Category data
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Update Category
+      tags:
+      - Category
+  /categories/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Category By ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Delete Category
+      tags:
+      - Category
+    get:
+      consumes:
+      - application/json
+      description: Get Category By ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Get Category By ID
+      tags:
+      - Category
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: User login with username and password
+      parameters:
+      - description: Login data
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Login
+      tags:
+      - Auth
+  /partners:
+    get:
+      consumes:
+      - application/json
+      description: Get all partners associated with the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Get All Partners By User
+      tags:
+      - Partner
+    post:
+      consumes:
+      - application/json
+      description: Create Partner
+      parameters:
+      - description: Partner data
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreatePartner'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Create Partner
+      tags:
+      - Partner
+    put:
+      consumes:
+      - application/json
+      description: Update Partner By ID
+      parameters:
+      - description: Partner data
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePartner'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Update Partner
+      tags:
+      - Partner
+  /partners/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Partner By ID
+      parameters:
+      - description: Partner ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Delete Partner
+      tags:
+      - Partner
+    get:
+      consumes:
+      - application/json
+      description: Get Partner By ID
+      parameters:
+      - description: Partner ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Get Partner By ID
+      tags:
+      - Partner
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: User register with username and password
+      parameters:
+      - description: register data
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Register
+      tags:
+      - Auth
+  /types:
+    post:
+      consumes:
+      - application/json
+      description: Create a new type
+      parameters:
+      - description: Type data
+        in: body
+        name: type
+        required: true
+        schema:
+          $ref: '#/definitions/models.Type'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Create Type
+      tags:
+      - Type
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
