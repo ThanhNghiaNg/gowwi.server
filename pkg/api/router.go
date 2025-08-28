@@ -21,31 +21,36 @@ func NewRouter() *gin.Engine {
 	// 		"message": "Service is running",
 	// 	})
 	// })
+	router.Use(middleware.CORSMiddleware())
 
 	// Define authentication routes
 	router.POST("/login", AuthApi.Login)
 	router.POST("/register", AuthApi.Register)
+	router.GET("/whoami", middleware.IsUser, AuthApi.WhoAmI)
 
 	// Define routes for types
 	router.POST("/types", middleware.IsUser, TypeApi.CreateType)
+	router.GET("/types", middleware.IsUser, TypeApi.GetTypes)
 
 	// Define routes for categories
 	categoryGroup := router.Group("/categories", middleware.IsUser)
-	categoryGroup.POST("/", CategoryApi.CreateCategory)
+	categoryGroup.POST("", CategoryApi.CreateCategory)
 	categoryGroup.PUT("/:id", CategoryApi.UpdateCategory)
-	categoryGroup.GET("/", CategoryApi.GetAllCategoriesByUser)
+	categoryGroup.GET("", CategoryApi.GetAllCategoriesByUser)
 	categoryGroup.GET("/:id", CategoryApi.GetCategoryByID)
 	categoryGroup.DELETE("/:id", CategoryApi.DeleteCategory)
 
 	// Define routes for partners
 	partnerGroup := router.Group("/partners", middleware.IsUser)
-	partnerGroup.POST("/", PartnerApi.CreatePartner)
+	partnerGroup.POST("", PartnerApi.CreatePartner)
 	partnerGroup.PUT("/:id", PartnerApi.UpdatePartner)
-	partnerGroup.GET("/", PartnerApi.GetAllPartnersByUser)
+	partnerGroup.GET("", PartnerApi.GetAllPartnersByUser)
 	partnerGroup.GET("/:id", PartnerApi.GetPartnerByID)
 	partnerGroup.DELETE("/:id", PartnerApi.DeletePartner)
+
+
 	// Define routes for transactions
-	// router.POST("/transactions", middleware.IsUser, TransactionApi.CreateTransaction)
+	router.POST("/transactions", middleware.IsUser, TransactionApi.CreateTransaction)
 	// router.PUT("/transactions/:id", middleware.IsUser, TransactionApi.UpdateTransaction)
 	// router.GET("/transactions", middleware.IsUser, TransactionApi.GetAllTransactionsByUser)
 	// router.GET("/transactions/:id", middleware.IsUser, TransactionApi.GetTransactionByID)

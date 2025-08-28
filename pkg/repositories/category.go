@@ -23,7 +23,6 @@ func convertToCategory(categoryRepo models.CategoryRepository) *models.Category 
 }
 
 func createCategory(category models.CreateCategory) error {
-	// Convert the category to a CreateCategoryRepository type
 	userId, errP1 := bson.ObjectIDFromHex(category.User)
 	if errP1 != nil {
 		return errP1

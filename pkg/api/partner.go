@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"owwi/pkg/models"
 	"owwi/pkg/repositories"
 
@@ -26,7 +27,15 @@ func createPartner(c *gin.Context) {
 		return
 	}
 
+	userID, exist := c.Get("user_id")
+	if !exist {
+		c.JSON(400, gin.H{"error": "User ID is required"})
+		return
+	}
+	partnerData.User = userID.(string)
+
 	if err := repositories.PartnerRepository.CreatePartner(partnerData); err != nil {
+		fmt.Print(err.Error())
 		c.JSON(500, gin.H{"error": "Failed to create type"})
 		return
 	}

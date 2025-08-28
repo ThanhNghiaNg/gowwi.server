@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"owwi/pkg/models"
 	"owwi/pkg/repositories"
 
@@ -21,13 +22,23 @@ import (
 // @Router /categories [post]
 func createCategory(c *gin.Context) {
 	var categoryData models.CreateCategory
+	// Check if the user is authenticated
+	userID, exist := c.Get("user_id")
+	if !exist {
+		c.JSON(400, gin.H{"error": "User ID is required"})
+		return
+	}
+
 	if err := c.BindJSON(&categoryData); err != nil || categoryData.Name == "" {
 		c.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
 
+	categoryData.User = userID.(string)
+
 	if err := repositories.CategoryRepository.CreateCategory(categoryData); err != nil {
-		c.JSON(500, gin.H{"error": "Failed to create type"})
+		fmt.Printf("Error creating category: %v\n", err)
+		c.JSON(500, gin.H{"error": "Failed to create category"})
 		return
 	}
 

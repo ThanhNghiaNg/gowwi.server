@@ -35,7 +35,11 @@ func createUser(user models.CreateUser) (bson.ObjectID, error) {
 
 func getUserByID(id string) (*models.User, error) {
 	var user models.UserRepository
-	err := databases.Client.Collection("users").FindOne(context.TODO(), map[string]string{"id": id}).Decode(&user)
+	userId, errP := bson.ObjectIDFromHex(id)
+	if errP != nil {
+		return nil, errP
+	}
+	err := databases.Client.Collection("users").FindOne(context.TODO(), bson.M{"_id": userId}).Decode(&user)
 	if err != nil {
 		return nil, err
 	}

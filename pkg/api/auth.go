@@ -160,10 +160,39 @@ func register(c *gin.Context) {
 	})
 }
 
+
+func whoAmI(c *gin.Context) {
+	// Get user information from context
+	userID, exist := c.Get("user_id")
+
+	if !exist {
+		c.JSON(401, gin.H{"isLoggedIn": false})
+		return
+	}
+
+	// Fetch user from database to get role information
+	user, err := repositories.UserRepository.GetUserByID(userID.(string))
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Failed to fetch user info"})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"isLoggedIn": true,
+		"user": map[string]interface{}{
+			"id":   userID,
+			"role": utils.If(user.IsAdmin, "admin", "user"),
+			"name": user.Username,
+		},
+	})
+}
+
 var AuthApi = struct {
 	Login    func(c *gin.Context)
 	Register func(c *gin.Context)
+	WhoAmI  func(c *gin.Context)
 }{
 	Login:    login,
 	Register: register,
+	WhoAmI:  whoAmI,
 }

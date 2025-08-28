@@ -7,6 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var TransactionApi = struct {
+	CreateTransaction  func(*gin.Context)
+	UpdateTransaction  func(*gin.Context)
+	GetTransactionByID func(*gin.Context)
+	DeleteTransaction  func(*gin.Context)
+}{
+	CreateTransaction: createTransaction,
+	// UpdateTransaction:  updateTransaction,
+	// GetTransactionByID: getTransactionByID,
+	// DeleteTransaction:  deleteTransaction,
+}
+
 // @Summary Create Transaction
 // @Description Create Transaction
 // @Tags Transaction
@@ -21,10 +33,78 @@ import (
 // @Router /transactions [post]
 func createTransaction(c *gin.Context) {
 	var transactionData models.CreateTransaction
-	if err := c.BindJSON(&transactionData); err != nil || transactionData.Name == "" {
+	if err := c.BindJSON(&transactionData); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
+
+	userID, exist := c.Get("user_id")
+	if !exist || userID == "" {
+		c.JSON(400, gin.H{"error": "User ID is required"})
+		return
+	}
+
+	transactionData.User = userID.(string)
+
+	categoryChanel := make(chan *models.Category)
+	typeChanel := make(chan *models.Type)
+	partnerChannel := make(chan *models.Partner)
+
+	defer close(categoryChanel)
+	defer close(typeChanel)
+	defer close(partnerChannel)
+
+	getPartnerRoutine := func(partnerID string, ch chan<- *models.Partner) {
+		partner, err := repositories.PartnerRepository.GetPartnerByID(partnerID)
+		if err != nil {
+			ch <- nil
+			return
+		}
+		ch <- partner
+	}
+
+	getCategoryRoutine := func(categoryID string, ch chan<- *models.Category) {
+		category, err := repositories.CategoryRepository.GetCategoryByID(categoryID)
+		if err != nil {
+			ch <- nil
+			return
+		}
+		ch <- category
+	}
+
+	getTypeRoutine := func(typeID string, ch chan<- *models.Type) {
+		typeData, err := repositories.TypeRepository.GetTypeByID(typeID)
+		if err != nil {
+			ch <- nil
+			return
+		}
+		ch <- typeData
+	}
+
+	go getCategoryRoutine(transactionData.CategoryID, categoryChanel)
+	go getTypeRoutine(transactionData.TypeID, typeChanel)
+	go getPartnerRoutine(transactionData.PartnerID, partnerChannel)
+
+	category := <-categoryChanel
+	typeData := <-typeChanel
+	partner := <-partnerChannel
+
+	if category == nil {
+		c.JSON(404, gin.H{"error": "Category not found"})
+		return
+	}
+	if typeData == nil {
+		c.JSON(404, gin.H{"error": "Type not found"})
+		return
+	}
+	if partner == nil {
+		c.JSON(404, gin.H{"error": "Partner not found"})
+		return
+	}
+
+	transactionData.CategoryName = category.Name
+	transactionData.TypeName = typeData.Name
+	transactionData.PartnerName = partner.Name
 
 	if err := repositories.TransactionRepository.CreateTransaction(transactionData); err != nil {
 		c.JSON(500, gin.H{"error": "Failed to create type"})
@@ -34,6 +114,7 @@ func createTransaction(c *gin.Context) {
 	c.Status(201)
 }
 
+/*
 // @Summary Update Transaction
 // @Description Update Transaction By ID
 // @Tags Transaction
@@ -133,6 +214,7 @@ func getAllTransactionsByUser(c *gin.Context) {
 
 	c.JSON(200, transactions)
 }
+
 // @Summary Delete Transaction
 // @Description Delete Transaction By ID
 // @Tags Transaction
@@ -161,14 +243,4 @@ func deleteTransaction(c *gin.Context) {
 	c.Status(204)
 }
 
-var TransactionApi = struct {
-	CreateTransaction         func(*gin.Context)
-	UpdateTransaction         func(*gin.Context)
-	GetTransactionByID        func(*gin.Context)
-	DeleteTransaction         func(*gin.Context)
-}{
-	CreateTransaction:         createTransaction,
-	UpdateTransaction:         updateTransaction,
-	GetTransactionByID:        getTransactionByID,
-	DeleteTransaction:         deleteTransaction,
-}
+*/

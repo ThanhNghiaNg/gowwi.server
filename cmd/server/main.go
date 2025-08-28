@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"owwi/pkg/api"
 	databases "owwi/pkg/database"
 
@@ -22,5 +23,5 @@ func main() {
 
 	router := api.NewRouter()
 
-	router.Run("localhost:8081")
+	router.Run(":" + os.Getenv("PORT"))
 }

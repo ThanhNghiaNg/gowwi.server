@@ -5,7 +5,7 @@ import (
 )
 
 type Type struct {
-	User      bson.ObjectID `json:"user"`
+	User      bson.ObjectID `bson:"user"`
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
 }

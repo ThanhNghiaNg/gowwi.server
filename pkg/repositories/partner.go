@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 	databases "owwi/pkg/database"
 	"owwi/pkg/models"
 	"time"
@@ -23,13 +24,14 @@ func convertToPartner(partnerRepo models.PartnerRepository) *models.Partner {
 }
 
 func createPartner(partner models.CreatePartner) error {
-	// Convert the partner to a CreatePartnerRepository type
 	userId, errP1 := bson.ObjectIDFromHex(partner.User)
+	fmt.Printf("userId %v", userId)
 	if errP1 != nil {
 		return errP1
 	}
 
 	typeId, errP2 := bson.ObjectIDFromHex(partner.Type)
+	fmt.Printf("typeId %v", typeId)
 	if errP2 != nil {
 		return errP2
 	}
@@ -132,15 +134,15 @@ func deletePartner(id string) error {
 }
 
 var PartnerRepository = struct {
-	CreatePartner         func(models.CreatePartner) error
-	UpdatePartner         func(models.UpdatePartner) error
-	GetPartnerByID        func(string) (*models.Partner, error)
+	CreatePartner        func(models.CreatePartner) error
+	UpdatePartner        func(models.UpdatePartner) error
+	GetPartnerByID       func(string) (*models.Partner, error)
 	GetAllPartnersByUser func(string) ([]models.Partner, error)
-	DeletePartner         func(string) error
+	DeletePartner        func(string) error
 }{
-	CreatePartner:         createPartner,
-	UpdatePartner:         updatePartner,
-	GetPartnerByID:        getPartnerByID,
+	CreatePartner:        createPartner,
+	UpdatePartner:        updatePartner,
+	GetPartnerByID:       getPartnerByID,
 	GetAllPartnersByUser: getAllPartnersByUser,
-	DeletePartner:         deletePartner,
+	DeletePartner:        deletePartner,
 }

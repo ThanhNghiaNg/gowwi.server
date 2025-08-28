@@ -33,6 +33,33 @@ definitions:
       user_id:
         type: string
     type: object
+  models.CreateTransaction:
+    properties:
+      amount:
+        type: number
+      category:
+        type: string
+      category_name:
+        type: string
+      created_at:
+        type: string
+      date:
+        type: string
+      description:
+        type: string
+      partner_id:
+        type: string
+      partner_name:
+        type: string
+      type_id:
+        type: string
+      type_name:
+        type: string
+      updated_at:
+        type: string
+      user:
+        type: string
+    type: object
   models.Type:
     properties:
       description:
@@ -417,6 +444,34 @@ paths:
       summary: Register
       tags:
       - Auth
+  /transactions:
+    post:
+      consumes:
+      - application/json
+      description: Create Transaction
+      parameters:
+      - description: Transaction data
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTransaction'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Create Transaction
+      tags:
+      - Transaction
   /types:
     post:
       consumes:

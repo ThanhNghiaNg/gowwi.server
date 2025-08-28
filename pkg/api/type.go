@@ -31,8 +31,22 @@ func createType(c *gin.Context) {
 	c.JSON(201, typeData)
 }
 
+
+func getTypes(c *gin.Context) {
+	userID := c.GetString("user_id")
+	types, err := repositories.TypeRepository.GetTypesByUserID(userID)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Failed to retrieve types"})
+		return
+	}
+
+	c.JSON(200, types)
+}
+
 var TypeApi = struct {
 	CreateType         func(*gin.Context)
+	GetTypes          func(*gin.Context)
 }{
 	CreateType:         createType,
+	GetTypes:          getTypes,
 }

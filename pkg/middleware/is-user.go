@@ -26,6 +26,11 @@ func IsUser(c *gin.Context) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		if claims["user_id"] == "" || claims["username"] == "" || claims["role"] == "" {
+			c.JSON(401, gin.H{"error": "Claims are not valid"})
+			c.Abort()
+			return
+		}
 		c.Set("user_id", claims["user_id"])
 		c.Set("username", claims["username"])
 		c.Set("role", claims["role"])
